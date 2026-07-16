@@ -1,0 +1,279 @@
+
+
+deployment.yaml
+
+File:
+k8s/app/deployment.yaml
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: end-to-end-devops-project
+  namespace: devops-project
+  labels:
+    app: end-to-end-devops-project
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: end-to-end-devops-project
+  template:
+    metadata:
+      labels:
+        app: end-to-end-devops-project
+    spec:
+      containers:
+        - name: website
+          image: IMAGE_PLACEHOLDER
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+
+---
+
+--------------------------------------------------------------------------------
+
+3. service.yaml
+
+File:
+k8s/app/service.yaml
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: end-to-end-devops-project
+  namespace: devops-project
+  labels:
+    app: end-to-end-devops-project
+spec:
+  type: ClusterIP
+  selector:
+    app: end-to-end-devops-project
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+--------------------------------------------------------------------------------
+
+4. ingress.yaml
+
+File:
+k8s/app/ingress.yaml
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: end-to-end-devops-project
+  namespace: devops-project
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: end-to-end-devops-project
+                port:
+                  number: 80
+---
+
+--------------------------------------------------------------------------------
+
+5. service-monitor.yaml
+
+File:
+k8s/app/service-monitor.yaml
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: end-to-end-devops-project
+  namespace: devops-project
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: end-to-end-devops-project
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+---
+
+--------------------------------------------------------------------------------
+
+
+
+
+
+6- PrometheusRule
+
+File:
+k8s/monitoring/prometheus-rule.yaml
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: end-to-end-devops-project-alerts
+  namespace: devops-project
+  labels:
+    release: prometheus
+spec:
+  groups:
+    - name: end-to-end-devops-project.rules
+      rules:
+        - alert: WebsiteHighRequestBurst
+          expr: sum(rate(devops_project_http_requests_total{route="/"}[3m])) * 180 > 200
+          for: 0m
+          labels:
+            severity: warning
+            namespace: devops-project
+          annotations:
+            summary: End to End DevOps Project website received more than 200 requests in 3 minutes
+            description: The website crossed the project threshold of more than 200 requests in a 3 minutes window.
+
+---
+
+--------------------------------------------------------------------------------
+
+
+
+7- AlertmanagerConfig
+
+File:
+k8s/monitoring/alertmanager-config.yaml
+
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: devops-project-email
+  namespace: devops-project
+  labels:
+    alertmanagerConfig: devops-project-email
+spec:
+  route:
+    receiver: email-team
+    groupBy:
+      - alertname
+    groupWait: 5s
+    groupInterval: 10s
+    repeatInterval: 2m
+
+  receivers:
+    - name: email-team
+      emailConfigs:
+        - to: schoolmena6@gmail.com
+          from: schoolmena6@gmail.com
+          smarthost: smtp.gmail.com:587
+          authUsername: schoolmena6@gmail.com
+          authPassword:
+            name: alertmanager-smtp-secret
+            key: smtp-password
+          requireTLS: true
+          sendResolved: true
+
+---
+
+--------------------------------------------------------------------------------
+
+8- kube-prometheus-stack-values.yaml
+
+
+File:
+k8s/monitoring/kube-prometheus-stack-values.yaml
+
+---
+prometheus:
+  prometheusSpec:
+    serviceMonitorNamespaceSelector: {}
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleNamespaceSelector: {}
+    ruleSelectorNilUsesHelmValues: false
+
+
+grafana:
+  enabled: true
+  adminPassword: admin
+  service:
+    type: LoadBalancer
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    alertmanagerConfigNamespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: In
+          values:
+            - devops-project
+    alertmanagerConfigSelector:
+      matchLabels:
+        alertmanagerConfig: devops-project-email
+
+---
+
+--------------------------------------------------------------------------------
+
+
+.dockerignore
+---
+node_modules
+coverage
+.git
+.scannerwork
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+README.md
+---
+
+
+.gitignore
+---
+node_modules/
+coverage/
+.scannerwork/
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+.env
+
+---
+

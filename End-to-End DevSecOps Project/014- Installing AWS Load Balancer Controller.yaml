@@ -1,0 +1,99 @@
+
+
+Add Helm repo:
+---
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+---
+
+
+ubuntu@ip-172-31-39-82:~$ curl --silent --location "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" | tar xz
+
+ubuntu@ip-172-31-39-82:~$ sudo mv eksctl /usr/local/bin
+
+ubuntu@ip-172-31-39-82:~$ eksctl version
+0.227.0
+
+
+
+---
+eksctl utils associate-iam-oidc-provider \
+  --cluster end-to-end-devops-eks \
+  --approve
+---
+
+---------------------------------------------------------------------
+
+
+ubuntu@ip-172-31-39-82:~$ curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+100   8955 100   8955   0      0 447.2k      0                              0
+
+
+ubuntu@ip-172-31-39-82:~$ aws iam create-policy \
+  --policy-name AWSLoadBalancerControllerIAMPolicy \
+  --policy-document file://iam-policy.json
+
+
+
+
+
+ubuntu@ip-172-31-39-82:~$ eksctl create iamserviceaccount \
+  --cluster end-to-end-devops-eks \
+  --namespace kube-system \
+  --name aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn arn:aws:iam::944153906994:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+2026-06-03 12:02:15 [ℹ]  1 iamserviceaccount (kube-system/aws-load-balancer-controller) was included (based on the include/exclude rules)
+2026-06-03 12:02:15 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
+2026-06-03 12:02:15 [ℹ]  1 task: {
+    2 sequential sub-tasks: {
+        create IAM role for serviceaccount "kube-system/aws-load-balancer-controller",
+        create serviceaccount "kube-system/aws-load-balancer-controller",
+    } }2026-06-03 12:02:15 [ℹ]  building iamserviceaccount stack "eksctl-end-to-end-devops-eks-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2026-06-03 12:02:15 [ℹ]  deploying stack "eksctl-end-to-end-devops-eks-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2026-06-03 12:02:15 [ℹ]  waiting for CloudFormation stack "eksctl-end-to-end-devops-eks-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2026-06-03 12:02:45 [ℹ]  waiting for CloudFormation stack "eksctl-end-to-end-devops-eks-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2026-06-03 12:02:45 [ℹ]  created serviceaccount "kube-system/aws-load-balancer-controller"
+
+
+
+
+ubuntu@ip-172-31-39-82:~$ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=end-to-end-devops-eks \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set region=us-east-1 \
+  --set vpcId=vpc-08e2ca25f6f1520d7
+NAME: aws-load-balancer-controller
+LAST DEPLOYED: Wed Jun  3 12:07:07 2026
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+AWS Load Balancer controller installed!
+
+
+ubuntu@ip-172-31-39-82:~$ kubectl get deployment -n kube-system aws-load-balancer-controller
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+aws-load-balancer-controller   2/2     2            2           33s
+
+
+ubuntu@ip-172-31-39-82:~$ kubectl get pods -n kube-system
+NAME                                            READY   STATUS    RESTARTS   AGE
+aws-load-balancer-controller-64ccb558cd-5k7b5   1/1     Running   0          42s
+aws-load-balancer-controller-64ccb558cd-ktr4x   1/1     Running   0          42s
+aws-node-kcm7h                                  2/2     Running   0          23m
+aws-node-vz9dz                                  2/2     Running   0          23m
+coredns-7fc5967d79-9xg2c                        1/1     Running   0          24m
+coredns-7fc5967d79-sjb26                        1/1     Running   0          24m
+kube-proxy-jcb5c                                1/1     Running   0          23m
+kube-proxy-qdmrl                                1/1     Running   0          23m
+
+=================================================================
+
+

@@ -1,0 +1,38 @@
+
+
+
+
+PS \09- Test DevOps Project> npm install
+
+
+
+PS \09- Test DevOps Project> npm test   
+
+> end-to-end-devops-project@1.0.0 test
+> node --test
+
+TAP version 13
+# Subtest: D:\\3- My Course\\01-1- Eng. Essia\\08- GitLab CI-CD\\09- Test DevOps Project\\test\\server.test.js
+ok 1 - D:\\3- My Course\\01-1- Eng. Essia\\08- GitLab CI-CD\\09- Test DevOps Project\\test\\server.test.js
+  ---
+  duration_ms: 4321.8129
+  ...
+1..1
+# tests 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4334.4976
+
+
+PS \09- Test DevOps Project> npm start
+
+> end-to-end-devops-project@1.0.0 start
+> node src/server.js
+
+
+
+
+

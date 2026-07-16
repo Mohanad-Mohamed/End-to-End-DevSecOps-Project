@@ -1,0 +1,126 @@
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get pods -n devops-project
+NAME                                         READY   STATUS    RESTARTS   AGE
+end-to-end-devops-project-8598885f89-b9kb4   1/1     Running   0          97s
+end-to-end-devops-project-8598885f89-wkrvm   1/1     Running   0          97s
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get deployment -n devops-project
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+end-to-end-devops-project   2/2     2            2           2m25s
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get svc -n devops-project
+NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+end-to-end-devops-project   ClusterIP   172.20.191.176   <none>        80/TCP    2m48s
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get ingress -n devops-project
+NAME                        CLASS    HOSTS   ADDRESS                                                                   PORTS   AGE
+end-to-end-devops-project   <none>   *       k8s-devopspr-endtoend-c133347c00-1338980735.us-east-1.elb.amazonaws.com   80      3m30s
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get svc -n monitoring
+NAME                                      TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+alertmanager-operated                     ClusterIP      None             <none>        9093/TCP,9094/TCP,9094/UDP   13m
+prometheus-grafana                        LoadBalancer   172.20.211.9     <pending>     80:30775/TCP                 13m
+prometheus-kube-prometheus-alertmanager   ClusterIP      172.20.109.170   <none>        9093/TCP,8080/TCP            13m
+prometheus-kube-prometheus-operator       ClusterIP      172.20.153.187   <none>        443/TCP                      13m
+prometheus-kube-prometheus-prometheus     ClusterIP      172.20.119.94    <none>        9090/TCP,8080/TCP            13m
+prometheus-kube-state-metrics             ClusterIP      172.20.90.10     <none>        8080/TCP                     13m
+prometheus-operated                       ClusterIP      None             <none>        9090/TCP                     13m
+prometheus-prometheus-node-exporter       ClusterIP      172.20.11.74     <none>        9100/TCP                     13m
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl patch svc prometheus-kube-prometheus-prometheus \
+  -n monitoring \
+  -p '{"spec": {"type": "NodePort"}}'
+service/prometheus-kube-prometheus-prometheus patched
+---
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get svc -n monitoring
+NAME                                      TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                         AGE
+alertmanager-operated                     ClusterIP      None             <none>        9093/TCP,9094/TCP,9094/UDP      40m
+prometheus-grafana                        LoadBalancer   172.20.211.9     <pending>     80:30775/TCP                    40m
+prometheus-kube-prometheus-alertmanager   ClusterIP      172.20.109.170   <none>        9093/TCP,8080/TCP               40m
+prometheus-kube-prometheus-operator       ClusterIP      172.20.153.187   <none>        443/TCP                         40m
+prometheus-kube-prometheus-prometheus     NodePort       172.20.119.94    <none>        9090:32710/TCP,8080:30518/TCP   40m
+prometheus-kube-state-metrics             ClusterIP      172.20.90.10     <none>        8080/TCP                        40m
+prometheus-operated                       ClusterIP      None             <none>        9090/TCP                        40m
+prometheus-prometheus-node-exporter       ClusterIP      172.20.11.74     <none>        9100/TCP                        40m
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get servicemonitor -n devops-project
+NAME                        AGE
+end-to-end-devops-project   51m
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get svc -n monitoring
+NAME                                      TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                         AGE
+alertmanager-operated                     ClusterIP      None             <none>        9093/TCP,9094/TCP,9094/UDP      59m
+prometheus-grafana                        LoadBalancer   172.20.211.9     <pending>     80:30775/TCP                    59m
+prometheus-kube-prometheus-alertmanager   ClusterIP      172.20.109.170   <none>        9093/TCP,8080/TCP               59m
+prometheus-kube-prometheus-operator       ClusterIP      172.20.153.187   <none>        443/TCP                         59m
+prometheus-kube-prometheus-prometheus     NodePort       172.20.119.94    <none>        9090:32710/TCP,8080:30518/TCP   59m
+prometheus-kube-state-metrics             ClusterIP      172.20.90.10     <none>        8080/TCP                        59m
+prometheus-operated                       ClusterIP      None             <none>        9090/TCP                        59m
+prometheus-prometheus-node-exporter       ClusterIP      172.20.11.74     <none>        9100/TCP                        59m
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get prometheusrule -n devops-project
+NAME                               AGE
+end-to-end-devops-project-alerts   16m
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl describe prometheusrule -n devops-project
+Name:         end-to-end-devops-project-alerts
+Namespace:    devops-project
+Labels:       release=prometheus
+Annotations:  prometheus-operator-validated: true
+API Version:  monitoring.coreos.com/v1
+Kind:         PrometheusRule
+Metadata:
+  Creation Timestamp:  2026-06-03T13:21:23Z
+  Generation:          1
+  Resource Version:    19630
+  UID:                 bf60614a-4983-45a2-837a-6bdefc4a8a77
+Spec:
+  Groups:
+    Name:  end-to-end-devops-project.rules
+    Rules:
+      Alert:  WebsiteHighRequestBurst
+      Annotations:
+        Description:  The website crossed the project threshold of more than 20 requests in a one-minute window.
+        Summary:      End to End DevOps Project website received more than 20 requests in one minute
+      Expr:           sum(increase(devops_project_http_requests_total{route="/"}[1m])) > 20
+      For:            0m
+      Labels:
+        Severity:  warning
+Events:            <none>
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get -n monitoring svc/prometheus-kube-prometheus-alertmanager
+NAME                                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+prometheus-kube-prometheus-alertmanager   ClusterIP   172.20.109.170   <none>        9093/TCP,8080/TCP   81m
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl patch svc prometheus-kube-prometheus-alertmanager \
+  -n monitoring \
+  -p '{"spec": {"type": "NodePort"}}'
+service/prometheus-kube-prometheus-alertmanager patched
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get -n monitoring svc/prometheus-kube-prometheus-alertmanager          NAME                                      TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)                         AGE
+prometheus-kube-prometheus-alertmanager   NodePort   172.20.109.170   <none>        9093:30146/TCP,8080:30524/TCP   82m
+
+
+
+ubuntu@ip-172-31-39-82:~$ ab -n 1200 -c 10 http://k8s-devopspr-endtoend-c133347c00-1338980735.us-east-1.elb.amazonaws.com/
+
+
+======================================================================================================================================
+

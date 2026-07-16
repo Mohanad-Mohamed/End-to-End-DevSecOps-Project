@@ -1,0 +1,239 @@
+
+
+ubuntu@ip-172-31-39-82:~$ sudo apt update
+sudo apt upgrade -y
+Get:1 http://us-east-1.ec2.archive.ubuntu.com/ubuntu resolute InRelease [136 kB]
+
+
+ubuntu@ip-172-31-39-82:~$ sudo apt install -y curl unzip gnupg software-properties-common apt-transport-https ca-certificates lsb-release
+curl is already the newest version (8.18.0-1ubuntu2.1).
+curl set to manually installed.
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+
+ubuntu@ip-172-31-39-82:~$ sudo apt install -y git
+git is already the newest version (1:2.53.0-1ubuntu1).
+git set to manually installed.
+
+
+ubuntu@ip-172-31-39-82:~$ git --version
+git version 2.53.0
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+
+ubuntu@ip-172-31-39-82:~$ wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+--2026-06-01 21:33:23--  https://apt.releases.hashicorp.com/gpg
+Resolving apt.releases.hashicorp.com (apt.releases.hashicorp.com)... 18.160.10.126, 18.160.10.71, 18.160.10.45, ...
+Connecting to apt.releases.hashicorp.com (apt.releases.hashicorp.com)|18.160.10.126|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3980 (3.9K) [binary/octet-stream]
+Saving to: ‘STDOUT’
+
+-                                   100%[=================================================================>]   3.89K  --.-KB/s    in 0s
+
+2026-06-01 21:33:23 (260 MB/s) - written to stdout [3980/3980]
+
+
+ubuntu@ip-172-31-39-82:~$ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com resolute main
+
+
+
+ubuntu@ip-172-31-39-82:~$ sudo apt update
+sudo apt install -y terraform
+Hit:1 http://us-east-1.ec2.archive.ubuntu.com/ubuntu resolute InRelease
+Hit:2 http://us-east-1.ec2.archive.ubuntu.com/ubuntu resolute-updates InRelease
+
+
+ubuntu@ip-172-31-39-82:~$ terraform version
+Terraform v1.15.5
+on linux_amd64
+
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+
+ubuntu@ip-172-31-39-82:~$ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+100 68.97M 100 68.97M   0      0 113.2M      0                              0
+
+
+ubuntu@ip-172-31-39-82:~$ unzip awscliv2.zip
+Archive:  awscliv2.zip
+
+ubuntu@ip-172-31-39-82:~$ sudo ./aws/install
+You can now run: /usr/local/bin/aws --version
+
+
+ubuntu@ip-172-31-39-82:~$ aws --version
+aws-cli/2.34.58 Python/3.14.5 Linux/7.0.0-1004-aws exe/x86_64.ubuntu.26
+
+
+
+ubuntu@ip-172-31-39-82:~$ aws configure
+Tip: You can deliver temporary credentials to the AWS CLI using your AWS Console session by running the command 'aws login'.
+
+AWS Access Key ID [None]: 
+AWS Secret Access Key [None]: 
+Default region name [None]: us-east-1
+Default output format [None]: json
+
+
+
+ubuntu@ip-172-31-39-82:~$ aws sts get-caller-identity
+{
+    "UserId": "AIDA5XU7VJ4ZANCDY5ENG",
+    "Account": "944153906994",
+    "Arn": "arn:aws:iam::944153906994:user/devops-project"
+}
+
+
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+
+ubuntu@ip-172-31-39-82:~$ curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+
+ubuntu@ip-172-31-39-82:~$ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /
+
+ubuntu@ip-172-31-39-82:~$ sudo apt update
+sudo apt install -y kubectl
+
+Hit:1 http://us-east-1.ec2.archive.ubuntu.com/ubuntu resolute InRelease
+Hit:2 http://us-east-1.ec2.archive.ubuntu.com/ubuntu resolute-updates InRelease
+Hit:3 http://us-east-1.ec2.archive.ubuntu.com/ubuntu resolute-backports InRelease
+Hit:4 https://apt.releases.hashicorp.com resolute InRelease
+Hit:5 http://security.ubuntu.com/ubuntu resolute-security InRelease
+Get:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.30/deb  InRelease [1192 B]
+Get:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.30/deb  Packages [20.3 kB]
+Fetched 21.5 kB in 0s (70.8 kB/s)
+All packages are up to date.
+Installing:
+  kubectl
+
+
+ubuntu@ip-172-31-39-82:~$ kubectl version --client
+Client Version: v1.30.14
+Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
+
+
+--------------------------------------------------------------------------
+
+
+ubuntu@ip-172-31-39-82:~$ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+100  11929 100  11929   0      0 135.2k      0                              0
+Downloading https://get.helm.sh/helm-v3.21.0-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+helm installed into /usr/local/bin/helm
+
+
+
+ubuntu@ip-172-31-39-82:~$ helm version
+version.BuildInfo{Version:"v3.21.0", GitCommit:"e0878d41b711792be60777fd65ad23a101e6b85f", GitTreeState:"clean", GoVersion:"go1.25.10"}
+
+
+================================================================================
+
+
+
+
+ubuntu@ip-172-31-39-82:~$ git clone https://gitlab.com/devops-project9921421/end-to-end-devops-project.git
+Cloning into 'end-to-end-devops-project'...
+remote: Enumerating objects: 45, done.
+remote: Counting objects: 100% (13/13), done.
+remote: Compressing objects: 100% (13/13), done.
+remote: Total 45 (delta 3), reused 0 (delta 0), pack-reused 32 (from 1)
+Receiving objects: 100% (45/45), 10.51 KiB | 1.50 MiB/s, done.
+Resolving deltas: 100% (13/13), done.
+
+
+ubuntu@ip-172-31-39-82:~$ cd end-to-end-devops-project/
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ touch new1
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ git add .
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ git commit -m "[skip ci]"
+[main 21478bc] [skip ci]
+ Committer: Ubuntu <ubuntu@ip-172-31-39-82.ec2.internal>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 new1
+
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ git config --global credential.helper store
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ git push origin main
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ cd terraform/
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project/terraform$ terraform init
+Initializing provider plugins found in the configuration...
+- Finding hashicorp/aws versions matching "~> 5.0"...
+- Installing hashicorp/aws v5.100.0...
+- Installed hashicorp/aws v5.100.0 (signed by HashiCorp)
+
+Initializing the backend...
+
+
+
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project/terraform$ terraform plan
+data.aws_availability_zones.available: Reading...
+data.aws_availability_zones.available: Read complete after 0s [id=us-east-1]
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project/terraform$ terraform apply
+data.aws_availability_zones.available: Reading...
+data.aws_availability_zones.available: Read complete after 0s [id=us-east-1]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project/terraform$ aws eks update-kubeconfig --name end-to-end-devops-eks --region us-east-1
+Added new context arn:aws:eks:us-east-1:944153906994:cluster/end-to-end-devops-eks to /home/ubuntu/.kube/config
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project/terraform$ kubectl get nodes
+NAME                          STATUS   ROLES    AGE     VERSION
+ip-10-40-0-147.ec2.internal   Ready    <none>   2m49s   v1.30.14-eks-3385e9b
+ip-10-40-1-178.ec2.internal   Ready    <none>   2m52s   v1.30.14-eks-3385e9b
+
+

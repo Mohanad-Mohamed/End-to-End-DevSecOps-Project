@@ -1,0 +1,68 @@
+
+
+
+PS D:\09- Test DevOps Project> git init
+
+
+PS D:\09- Test DevOps Project> git remote add origin https://gitlab.com/
+
+
+PS D:\09- Test DevOps Project> git add .
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'public/assets/styles.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'public/index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/server.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test/server.test.js', LF will be replaced by CRLF the next time Git touches it
+ create mode 100644 package.json
+ create mode 100644 public/assets/styles.css
+ create mode 100644 public/index.html
+ create mode 100644 src/server.js
+ create mode 100644 test/server.test.js
+
+
+PS C:\Users\Mena\Desktop\NodeJS-App> git commit -m "Adding Project files"
+[master (root-commit) dbe2f3c] files project nodejs
+ 6 files changed, 1451 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 DockerFile
+ create mode 100644 package-lock.json
+ create mode 100644 package.json
+ create mode 100644 public/index.html
+ create mode 100644 server.js
+
+
+
+PS D:\09- Test DevOps Project> git config --global credential.helper store
+
+
+PS D:\09- Test DevOps Project> git branch -M main
+
+
+PS D:\09- Test DevOps Project> git push -uf origin main
+Enumerating objects: 13, done.
+Counting objects: 100% (13/13), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (13/13), 5.44 KiB | 1.09 MiB/s, done.
+Total 13 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://gitlab.com/devops-project9921421/end-to-end-devops-project.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+
+---
+
+=========================================================================================
+
+
+.gitlab-ci.yml
+---
+stages:
+  - test
+
+unit_tests:
+  stage: test
+  image: node:20-alpine
+  script:
+    - npm test
+---

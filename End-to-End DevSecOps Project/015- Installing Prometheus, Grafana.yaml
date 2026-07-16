@@ -1,0 +1,46 @@
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl create namespace devops-project
+namespace/devops-project created
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl -n devops-project create secret generic alertmanager-smtp-secret   --from-literal=smtp-password="stoh mlgp rbds rphq"
+secret/alertmanager-smtp-secret created
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get secret -n devops-project
+NAME                       TYPE     DATA   AGE
+alertmanager-smtp-secret   Opaque   1      37s
+
+
+
+Add Helm repo:
+---
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+---
+
+Create namespace:
+---
+kubectl create namespace monitoring
+---
+
+Install:
+---
+helm install prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --values k8s/monitoring/kube-prometheus-stack-values.yaml
+---
+
+
+
+ubuntu@ip-172-31-39-82:~/end-to-end-devops-project$ kubectl get pods -n monitoring
+NAME                                                     READY   STATUS    RESTARTS   AGE
+alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running   0          76s
+prometheus-grafana-68cf7577cf-lgzp2                      3/3     Running   0          80s
+prometheus-kube-prometheus-operator-5786fb9bd4-mjxkw     1/1     Running   0          80s
+prometheus-kube-state-metrics-678b9d8db-fs2vb            1/1     Running   0          80s
+prometheus-prometheus-kube-prometheus-prometheus-0       2/2     Running   0          76s
+prometheus-prometheus-node-exporter-4jjqv                1/1     Running   0          80s
+prometheus-prometheus-node-exporter-9jrwl                1/1     Running   0          80s
+

@@ -1,0 +1,494 @@
+
+
+Files:
+---
+public/index.html
+public/assets/styles.css
+src/server.js
+package.json
+---
+
+================================================================================
+
+public/index.html
+
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>End to End DevSecOps Project</title>
+    <meta
+      name="description"
+      content="End to End DevSecOps Project instructed by Mena Magdy Halem."
+    />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <nav class="topbar" aria-label="Primary navigation">
+        <a class="brand" href="/">
+          <span class="brand-mark">DS</span>
+          <span>End to End DevSecOps Project</span>
+        </a>
+        <div class="nav-links">
+        </div>
+      </nav>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">DevSecOps project</p>
+          <h1 id="hero-title">End to End DevSecOps Project</h1>
+          <p class="hero-text">
+            A simple modern DevSecOps preview website for teaching the complete path from source
+            code to a secure, monitored Kubernetes deployment.
+          </p>
+          <div class="project-meta" aria-label="Project information">
+            <p><span>Name of project</span><strong>End to End DevSecOps Project</strong></p>
+            <p><span>Instructor</span><strong>Mena Magdy Halem</strong></p>
+          </div>
+        </div>
+        <div class="devops-panel" aria-label="DevSecOps infinity preview">
+          <div class="devops-icon" aria-hidden="true">
+            <svg viewBox="0 0 220 120" role="img">
+              <path d="M58 32C30 32 18 58 32 78c15 22 45 9 78-18 33-27 63-40 78-18 14 20 2 46-26 46-22 0-39-16-52-28C97 48 80 32 58 32Z" />
+            </svg>
+          </div>
+          <div class="tool-cloud">
+            <span>GitLab CI</span>
+            <span>Docker</span>
+            <span>Trivy</span>
+            <span>SonarQube</span>
+            <span>EKS</span>
+            <span>Prometheus</span>
+            <span>Grafana</span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </body>
+</html>
+
+---
+
+================================================================================
+
+
+public/assets/styles.css
+---
+
+:root {
+  color-scheme: dark;
+  --bg: #070912;
+  --panel: rgba(12, 18, 34, 0.72);
+  --panel-strong: rgba(15, 23, 42, 0.92);
+  --text: #f7fbff;
+  --muted: #b6c3d7;
+  --line: rgba(255, 255, 255, 0.14);
+  --accent: #37e6a2;
+  --accent-2: #61a6ff;
+  --accent-3: #ffbe4d;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(55, 230, 162, 0.2), transparent 28rem),
+    radial-gradient(circle at 85% 20%, rgba(97, 166, 255, 0.24), transparent 30rem),
+    linear-gradient(135deg, #070912, #0d1022 45%, #101827);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+body::before {
+  position: fixed;
+  inset: -35%;
+  z-index: -1;
+  content: "";
+  background:
+    conic-gradient(from 120deg, rgba(55, 230, 162, 0.16), transparent, rgba(255, 190, 77, 0.15), transparent, rgba(97, 166, 255, 0.18)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent);
+  animation: gradient-drift 16s ease-in-out infinite alternate;
+  filter: blur(32px);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+code {
+  color: var(--accent);
+}
+
+.page-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 78px;
+  gap: 24px;
+}
+
+.brand,
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  gap: 12px;
+  font-weight: 800;
+}
+
+.brand-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(55, 230, 162, 0.32), rgba(97, 166, 255, 0.16));
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+  gap: 42px;
+  align-items: center;
+  min-height: calc(100vh - 78px);
+  padding: 44px 0 86px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 760px;
+  margin-bottom: 24px;
+  font-size: clamp(3.3rem, 10vw, 7.4rem);
+  line-height: 0.9;
+}
+
+.hero-text {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.hero-text {
+  max-width: 670px;
+  font-size: 1.18rem;
+}
+
+.devops-panel,
+.tool-cloud span {
+  background: var(--panel);
+  backdrop-filter: blur(18px);
+}
+
+.devops-panel {
+  display: grid;
+  gap: 26px;
+  min-width: 0;
+  padding: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.devops-icon {
+  display: grid;
+  place-items: center;
+  min-height: 210px;
+}
+
+.devops-icon svg {
+  width: min(100%, 360px);
+  overflow: visible;
+}
+
+.devops-icon svg path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 13;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 20px rgba(55, 230, 162, 0.42));
+  stroke-dasharray: 22 10;
+  animation: dash-flow 4s linear infinite;
+}
+
+.tool-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tool-cloud span {
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.project-meta {
+  display: grid;
+  max-width: 620px;
+  margin-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.project-meta p {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 16px;
+  margin: 0;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.project-meta span {
+  color: var(--muted);
+}
+
+.project-meta strong {
+  color: var(--text);
+}
+
+
+@keyframes gradient-drift {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  100% {
+    transform: rotate(24deg) scale(1.14);
+  }
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -64;
+  }
+}
+
+@media (max-width: 880px) {
+  .nav-links {
+    display: none;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    min-height: auto;
+    padding-top: 38px;
+  }
+}
+
+@media (max-width: 560px) {
+  .page-shell {
+    width: min(100% - 22px, 1180px);
+  }
+
+  .project-meta p {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+
+---
+
+====================================================================================
+
+
+
+src/server.js
+---
+
+import http from "node:http";
+import { readFile } from "node:fs/promises";
+import { extname, join, normalize } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const currentFile = fileURLToPath(import.meta.url);
+const publicDir = normalize(join(__dirname, "..", "public"));
+
+const port = Number.parseInt(process.env.PORT || "3000", 10);
+const metrics = {
+  startedAt: Date.now(),
+  totalRequests: 0,
+  requestsByRoute: new Map()
+};
+
+const contentTypes = {
+  ".css": "text/css; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
+  ".html": "text/html; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".svg": "image/svg+xml"
+};
+
+export function routeLabel(pathname) {
+  if (pathname === "/" || pathname === "/index.html") return "/";
+  if (pathname === "/healthz") return "/healthz";
+  if (pathname === "/metrics") return "/metrics";
+  if (pathname.startsWith("/assets/")) return "/assets";
+  return "other";
+}
+
+export function recordRequest(pathname) {
+  metrics.totalRequests += 1;
+  const label = routeLabel(pathname);
+  metrics.requestsByRoute.set(label, (metrics.requestsByRoute.get(label) || 0) + 1);
+}
+
+export function buildMetricsSnapshot() {
+  const uptimeSeconds = Math.floor((Date.now() - metrics.startedAt) / 1000);
+  const requestLines = [...metrics.requestsByRoute.entries()]
+    .map(([route, count]) => `devops_project_http_requests_total{route="${route}"} ${count}`)
+    .join("\n");
+
+  return [
+    "# HELP devops_project_http_requests_total Total HTTP requests handled by route.",
+    "# TYPE devops_project_http_requests_total counter",
+    requestLines || 'devops_project_http_requests_total{route="/"} 0',
+    "# HELP devops_project_uptime_seconds Application uptime in seconds.",
+    "# TYPE devops_project_uptime_seconds gauge",
+    `devops_project_uptime_seconds ${uptimeSeconds}`
+  ].join("\n");
+}
+
+export function safePublicPath(pathname) {
+  const cleanPath = pathname === "/" ? "/index.html" : decodeURIComponent(pathname);
+  const target = normalize(join(publicDir, cleanPath));
+
+  if (!target.startsWith(publicDir)) {
+    return null;
+  }
+
+  return target;
+}
+
+async function serveStaticFile(requestPath, response) {
+  const filePath = safePublicPath(requestPath);
+
+  if (!filePath) {
+    response.writeHead(403, { "content-type": "text/plain; charset=utf-8" });
+    response.end("Forbidden");
+    return;
+  }
+
+  try {
+    const body = await readFile(filePath);
+    response.writeHead(200, {
+      "content-type": contentTypes[extname(filePath)] || "application/octet-stream",
+      "cache-control": "public, max-age=300"
+    });
+    response.end(body);
+  } catch {
+    response.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
+    response.end("Not found");
+  }
+}
+
+export function createServer() {
+  return http.createServer(async (request, response) => {
+    const url = new URL(request.url || "/", `http://${request.headers.host || "localhost"}`);
+    recordRequest(url.pathname);
+
+    if (url.pathname === "/healthz") {
+      response.writeHead(200, { "content-type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ status: "ok" }));
+      return;
+    }
+
+    if (url.pathname === "/metrics") {
+      response.writeHead(200, { "content-type": "text/plain; version=0.0.4; charset=utf-8" });
+      response.end(`${buildMetricsSnapshot()}\n`);
+      return;
+    }
+
+    await serveStaticFile(url.pathname, response);
+  });
+}
+
+if (process.argv[1] === currentFile) {
+  createServer().listen(port, "0.0.0.0", () => {
+    console.log(`End to End DevOps Project running on port ${port}`);
+  });
+}
+
+---
+
+
+
+====================================================================================
+
+
+package.json
+---
+
+{
+  "name": "end-to-end-devops-project",
+  "version": "1.0.0",
+  "description": "A simple modern website for an end-to-end DevSecOps project with GitLab CI/CD, Docker, Trivy, SonarQube, EKS, Prometheus, and Grafana.",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "gitlab-ci",
+    "devops",
+    "eks",
+    "docker",
+    "prometheus",
+    "grafana"
+  ],
+  "author": "Mena Magdy Halem",
+  "license": "MIT"
+}
+
+---
+
+
+========================================================================================
+
