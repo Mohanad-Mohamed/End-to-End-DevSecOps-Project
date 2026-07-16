@@ -6,8 +6,6 @@ A comprehensive DevSecOps demonstration project that showcases the complete soft
 
 This project implements a modern web application with a full DevSecOps pipeline including continuous integration, container security scanning, code quality analysis, infrastructure as code, and production-grade monitoring. It serves as an educational resource for understanding best practices in secure DevOps workflows.
 
-**Instructor:** Mena Magdy Halem
-
 ## ✨ Features
 
 - **Modern Web Application**: Simple Node.js server with responsive HTML/CSS frontend
@@ -262,28 +260,3 @@ Contributions are welcome! Please follow these steps:
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 👨‍🏫 Acknowledgments
-
-- **Instructor**: Mena Magdy Halem
-- This project was created for educational purposes to demonstrate end-to-end DevSecOps practices
-
-## 🔗 Resources
-
-- [GitLab CI/CD Documentation](https://docs.gitlab.com/ee/ci/)
-- [Docker Documentation](https://docs.docker.com/)
-- [Trivy Documentation](https://aquasecurity.github.io/trivy/)
-- [SonarQube Documentation](https://docs.sonarqube.org/)
-- [Terraform Documentation](https://developer.hashicorp.com/terraform)
-- [AWS EKS Documentation](https://docs.aws.amazon.com/eks/)
-- [Kubernetes Documentation](https://kubernetes.io/docs/)
-- [Prometheus Documentation](https://prometheus.io/docs/)
-- [Grafana Documentation](https://grafana.com/docs/)
-
----
-
-**Note**: This is a demonstration project for learning DevSecOps practices. Ensure proper security measures and configurations are applied before using in production environments.
